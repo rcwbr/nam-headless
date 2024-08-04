@@ -1,0 +1,22 @@
+docker run \
+    --platform linux/amd64 \
+    --rm \
+    -v $(pwd):$(pwd) \
+    --entrypoint bash \
+    --name jalv jalv:latest \
+    -c 'ulimit -a && jackd --no-realtime -d dummy'
+
+    # --ulimit memlock=-1 \
+
+docker exec \
+    -it \
+    -e LV2_PATH=/neural-amp-modeler-lv2/build \
+    -e NAM_LV2_DEFAULT_MODEL="$(pwd)/model.nam" \
+    jalv \
+    bash \
+        -c "jalv \
+            -t \
+            http://github.com/mikeoliphant/neural-amp-modeler-lv2 \
+        "
+
+docker rm -f jalv
